@@ -1,0 +1,45 @@
+{
+  "extends": "@hintboard/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@ui/*": ["components/*"],
+      "@lib/*": ["./lib/*"],
+      "@/features/*": ["domains/*"],
+      // App Router
+      "@/app/*": ["./app/*"],
+
+      // Domains (business logic)
+      "@/domains/*": ["./domains/*"],
+
+      // Shared (reusable across domains)
+      "@/shared/*": ["./shared/*"],
+      "@/components/*": ["./shared/components/*"],
+      "@/hooks/*": ["./shared/hooks/*"],
+      "@/utils/*": ["./shared/utils/*"],
+
+      // Infrastructure
+      "@/lib/*": ["./lib/*"],
+
+      // Types (global)
+      "@/types/*": ["./shared/types/*"],
+
+      // Root-level shortcuts
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
+    // ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

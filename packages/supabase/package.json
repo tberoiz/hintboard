@@ -1,0 +1,54 @@
+{
+  "name": "@hintboard/supabase",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf node_modules",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit",
+    "docs": "typedoc",
+    "generate-types": "cd ../../infra && supabase gen types typescript --local > ../packages/supabase/src/lib/types/database.types.ts",
+    "db:reset": "cd ../../infra && supabase db reset",
+    "db:migrate": "cd ../../infra && supabase db push"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "dotenv": "^16.5.0",
+    "next": "15.0.3",
+    "tsx": "^4.7.0",
+    "typedoc": "^0.28.14",
+    "typescript": "^5.5.4",
+    "vitest": "^1.0.0",
+    "zod": "^3.22.0"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.81.1",
+    "sharp": "^0.33.5",
+    "supabase": "^2.40.7",
+    "uuid": "^11.1.0"
+  },
+  "exports": {
+    "./client": {
+      "types": "./dist/lib/clients/client.d.ts",
+      "default": "./dist/lib/clients/client.js"
+    },
+    "./server": {
+      "types": "./dist/lib/clients/server.d.ts",
+      "default": "./dist/lib/clients/server.js"
+    },
+    "./types": {
+      "types": "./dist/lib/types/index.d.ts",
+      "default": "./dist/lib/types/index.js"
+    },
+    "./services": {
+      "types": "./dist/services/index.d.ts",
+      "default": "./dist/services/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    }
+  }
+}
