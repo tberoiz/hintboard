@@ -2,7 +2,7 @@
 import React from "react";
 import { Badge, Button } from "@hintboard/ui/component";
 import { HStack, VStack } from "@hintboard/ui/component";
-import { MessageSquare, ArrowBigUp, Lock, Pin, Bug } from "lucide-react";
+import { MessageSquare, TrendingUp, Lock, Pin, Bug } from "lucide-react";
 import {
   IdeasService,
   IdeaWithUserInfo,
@@ -183,7 +183,7 @@ export function IdeaCard({ idea }: { idea: IdeaWithUserInfo }) {
             onClick={handleVoteClick}
             disabled={isVoting}
           >
-            <ArrowBigUp
+            <TrendingUp
               className={cn(
                 "w-4 h-4 transition-all duration-200",
                 myVote && "fill-current",
