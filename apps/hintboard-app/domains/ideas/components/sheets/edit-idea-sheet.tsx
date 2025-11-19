@@ -175,6 +175,8 @@ export const EditIdeaSheet: React.FC<EditIdeaSheetProps> = ({
     setDeleting(true);
     try {
       await IdeasService.deleteIdea(idea.idea_id, "client");
+      queryClient.invalidateQueries({ queryKey: ["filtered-ideas"] });
+      queryClient.invalidateQueries({ queryKey: ["idea", idea.idea_id] });
       toast.success("Idea deleted successfully!");
       setShowDeleteDialog(false);
       onOpenChange(false);
