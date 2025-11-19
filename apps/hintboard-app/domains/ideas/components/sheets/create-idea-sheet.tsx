@@ -13,10 +13,10 @@ import {
   SheetTrigger,
   Button,
 } from "@hintboard/ui/component";
-import { IdeasService } from "@hintboard/supabase/services";
+import { IdeasService, UserService } from "@hintboard/supabase/services";
 import { useOrganization } from "@/shared/contexts/organizations-context";
 import { IdeaForm, IdeaFormData } from "../forms/idea-form";
-import { Plus, Send } from "lucide-react";
+import { Send } from "lucide-react";
 
 interface CreateIdeaSheetProps {
   organizationId: string | undefined;
@@ -39,6 +39,26 @@ export const CreateIdeaSheet: React.FC<CreateIdeaSheetProps> = ({
     selectedUserId: null,
     attachedFiles: [],
   });
+  const [user, setUser] = useState<Awaited<
+    ReturnType<typeof UserService.getUserInfo>
+  > | null>(null);
+
+  React.useEffect(() => {
+    const loadUser = async () => {
+      const info = await UserService.getUserInfo("client");
+      setUser(info);
+    };
+    loadUser();
+  }, []);
+
+  React.useEffect(() => {
+    if (user?.id) {
+      setFormData((prev) => ({
+        ...prev,
+        selectedUserId: prev.selectedUserId || user.id,
+      }));
+    }
+  }, [user?.id]);
 
   const userRole = organization?.role || "guest";
   const isGuest = userRole === "guest";
