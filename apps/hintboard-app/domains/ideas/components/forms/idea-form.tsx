@@ -21,6 +21,7 @@ import {
   CardHeader,
   CardContent,
   AspectRatio,
+  AvatarImage,
 } from "@hintboard/ui/component";
 import {
   TopicsService,
@@ -75,12 +76,13 @@ const UserSelector = ({
 }) => {
   const [showUserList, setShowUserList] = useState(false);
   const selectedUser = workspaceUsers.find((u: any) => u.id === selectedUserId);
-
+  console.log(selectedUser);
   return (
     <div className="relative">
       <InputGroup>
         <InputGroupAddon>
           <Avatar className="h-8 w-8">
+            <AvatarImage src={selectedUser?.avatar_url}></AvatarImage>
             <AvatarFallback className="text-sm font-medium">
               {selectedUser?.name?.[0]?.toUpperCase() ??
                 selectedUser?.email?.[0]?.toUpperCase() ??
@@ -134,6 +136,8 @@ const UserSelector = ({
                 }`}
               >
                 <Avatar className="h-6 w-6">
+                  <AvatarImage src={user?.avatar_url}></AvatarImage>
+
                   <AvatarFallback className="text-xs">
                     {user.name?.[0]?.toUpperCase() ??
                       user.email?.[0]?.toUpperCase() ??

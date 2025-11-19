@@ -1479,8 +1479,6 @@ export class UserService extends ServiceBase {
           .eq("user_id", userId)
           .single();
 
-        console.log("data", subscription);
-
         if (error) {
           // If no subscription record exists, no trial to display
           if (error.code === "PGRST116") {

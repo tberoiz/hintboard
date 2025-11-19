@@ -99,7 +99,6 @@ export default function IdeasSidebar({
       try {
         const days = await UserService.getTrialDaysRemaining("client");
 
-        console.log("days", days);
         setTrialDaysRemaining(days);
       } catch (error) {
         console.error("Error fetching trial days:", error);
