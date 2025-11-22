@@ -77,9 +77,11 @@ const formSchema = z.object({
 export function CreateOrganizationForm() {
   const router = useRouter();
   const [subdomainError, setSubdomainError] = useState<string | null>(null);
+  const [hasUserEditedSlug, setHasUserEditedSlug] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onSubmit", // Only validate on submit, not on change
     defaultValues: {
       organizationName: "",
       workspaceSubdomain: "",
@@ -87,26 +89,24 @@ export function CreateOrganizationForm() {
   });
   const isSubmitting = form.formState.isSubmitting;
 
-  // Auto-generate subdomain from organization name
-  const handleOrganizationNameChange = (name: string) => {
-    const currentSubdomain = form.getValues("workspaceSubdomain");
-
-    // Only auto-fill if subdomain is empty or matches previous org name pattern
-    if (
-      !currentSubdomain ||
-      currentSubdomain === generateSlug(form.getValues("organizationName"))
-    ) {
-      const slug = generateSlug(name);
-      form.setValue("workspaceSubdomain", slug, { shouldValidate: true });
-    }
-  };
-
   const generateSlug = (name: string): string => {
     return name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with hyphens
       .replace(/^-+|-+$/g, "") // Remove leading/trailing hyphens
       .slice(0, 30); // Limit to 30 characters
+  };
+
+  // Auto-generate subdomain from organization name (only if user hasn't manually edited it)
+  const handleOrganizationNameChange = (name: string) => {
+    if (!hasUserEditedSlug) {
+      const slug = generateSlug(name);
+      form.setValue("workspaceSubdomain", slug, {
+        shouldValidate: false, // Don't trigger validation
+        shouldDirty: false, // Don't mark as dirty
+        shouldTouch: false, // Don't mark as touched
+      });
+    }
   };
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -297,15 +297,21 @@ export function CreateOrganizationForm() {
                         disabled={isSubmitting}
                         className={subdomainError ? "border-destructive" : ""}
                         onChange={(e) => {
+                          // Mark that user has manually edited the slug
+                          setHasUserEditedSlug(true);
+
                           // Clear error when user starts typing
                           if (subdomainError) {
                             setSubdomainError(null);
                           }
-                          // Remove spaces and pass the value to react-hook-form
-                          field.onChange(
-                            e.target.value.replace(/\s+/g, "").toLowerCase(),
-                          );
+
+                          // Remove spaces and convert to lowercase
+                          const cleanedValue = e.target.value
+                            .replace(/\s+/g, "")
+                            .toLowerCase();
+                          field.onChange(cleanedValue);
                         }}
+                        onBlur={field.onBlur}
                       />
                     </FormControl>
                     <span className="text-muted-foreground text-sm whitespace-nowrap">

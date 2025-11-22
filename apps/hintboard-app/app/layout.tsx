@@ -13,8 +13,6 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const cookieStore = await cookies();
-
   const h = await headers();
   const organization = {
     id: h.get("x-organization-id"),

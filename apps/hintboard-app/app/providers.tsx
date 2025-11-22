@@ -4,6 +4,7 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { TooltipProvider } from "@hintboard/ui/component";
+import { SubscriptionLimitsProvider } from "@/shared/contexts/subscription-limits-context";
 
 interface hintboardProvidersProps {
   children: React.ReactNode;
@@ -12,11 +13,9 @@ interface hintboardProvidersProps {
 
 export function HintboardProviders({
   children,
-  initialTheme = "system",
+  initialTheme = "dark",
 }: hintboardProvidersProps) {
   const [queryClient] = useState(() => new QueryClient());
-
-  // }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -26,7 +25,9 @@ export function HintboardProviders({
         enableSystem
         disableTransitionOnChange
       >
-        <TooltipProvider>{children}</TooltipProvider>
+        <SubscriptionLimitsProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </SubscriptionLimitsProvider>
       </NextThemesProvider>
     </QueryClientProvider>
   );

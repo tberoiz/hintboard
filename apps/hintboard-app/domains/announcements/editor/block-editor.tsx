@@ -116,6 +116,106 @@ export function BlockEditor({
     );
   }
 
+  if (block.type === "button") {
+    return (
+      <div
+        className="group relative flex items-start gap-2"
+        data-block-id={block.id}
+      >
+        <div className="flex items-center gap-1 mt-2">
+          <button
+            onClick={() => onAdd("paragraph")}
+            className="opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer p-1 hover:bg-accent rounded"
+          >
+            <Plus className="w-4 h-4 text-muted-foreground" />
+          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer p-1 hover:bg-accent rounded">
+                <GripVertical className="w-4 h-4 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {canDelete && (
+                <DropdownMenuItem
+                  onClick={onDelete}
+                  className="text-destructive cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="flex-1 space-y-2">
+          <input
+            type="text"
+            value={block.content}
+            onChange={(e) => onUpdate({ content: e.target.value })}
+            onKeyDown={handleKeyDown}
+            placeholder="Button text..."
+            className="w-full px-3 py-2 border border-input rounded-md outline-none focus:border-ring bg-background"
+          />
+          <input
+            type="text"
+            value={block.buttonUrl || ""}
+            onChange={(e) => onUpdate({ buttonUrl: e.target.value })}
+            placeholder="Button URL (e.g., https://example.com)"
+            className="w-full px-3 py-2 border border-input rounded-md outline-none focus:border-ring bg-background"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={() => onUpdate({ buttonStyle: "primary" })}
+              className={`px-3 py-1 text-sm rounded border ${
+                (block.buttonStyle || "primary") === "primary"
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-background border-input"
+              }`}
+            >
+              Primary
+            </button>
+            <button
+              onClick={() => onUpdate({ buttonStyle: "secondary" })}
+              className={`px-3 py-1 text-sm rounded border ${
+                block.buttonStyle === "secondary"
+                  ? "bg-secondary text-secondary-foreground border-secondary"
+                  : "bg-background border-input"
+              }`}
+            >
+              Secondary
+            </button>
+            <button
+              onClick={() => onUpdate({ buttonStyle: "outline" })}
+              className={`px-3 py-1 text-sm rounded border ${
+                block.buttonStyle === "outline"
+                  ? "border-primary text-primary"
+                  : "bg-background border-input"
+              }`}
+            >
+              Outline
+            </button>
+          </div>
+          {block.content && (
+            <div className="mt-3">
+              <button
+                className={`px-6 py-2 rounded-md font-medium transition-colors ${
+                  block.buttonStyle === "secondary"
+                    ? "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    : block.buttonStyle === "outline"
+                      ? "border-2 border-primary text-primary hover:bg-primary/10"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90"
+                }`}
+              >
+                {block.content}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   if (block.type === "image") {
     return (
       <div

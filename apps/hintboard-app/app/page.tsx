@@ -17,6 +17,7 @@ import {
   Lock,
   Send,
 } from "lucide-react";
+import PricingSection from "./landing/components/pricing-section";
 
 export default function HintboardModernLanding() {
   const [activeTab, setActiveTab] = useState(0);
@@ -59,9 +60,11 @@ export default function HintboardModernLanding() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 text-xl font-bold">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg">
-                <span className="text-sm text-white font-bold">H</span>
-              </div>
+              <img
+                src="/brand/hintboard-icon.svg"
+                alt="Hintboard"
+                className="w-8 h-8"
+              />
               <span className="text-white">hintboard</span>
             </div>
             <div className="hidden md:flex items-center gap-6">
@@ -78,7 +81,7 @@ export default function HintboardModernLanding() {
                 Pricing
               </a>
               <a
-                href="#"
+                href="#customers"
                 className="text-sm text-gray-400 hover:text-white transition"
               >
                 Customers
@@ -103,7 +106,7 @@ export default function HintboardModernLanding() {
                     Sign in
                   </a>
                   <a
-                    href="/register"
+                    href="/signup"
                     className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-orange-500/20 transition"
                   >
                     Start Free Trial
@@ -125,10 +128,10 @@ export default function HintboardModernLanding() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center space-y-8 max-w-4xl mx-auto">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-gray-300 text-sm font-medium backdrop-blur-sm">
+            {/*<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-gray-300 text-sm font-medium backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-orange-400" />
               <span>Trusted by 500+ product teams</span>
-            </div>
+            </div>*/}
 
             {/* Headline */}
             <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-tight">
@@ -147,7 +150,7 @@ export default function HintboardModernLanding() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <a
-                href="/register"
+                href="/signup"
                 className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/20 transition flex items-center justify-center gap-2"
               >
                 Start Free Trial
@@ -177,82 +180,225 @@ export default function HintboardModernLanding() {
           </div>
 
           {/* Hero Visual */}
+          {/* Hero Visual - Redesigned */}
           <div className="mt-20 relative">
-            <div className="relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] shadow-2xl overflow-hidden backdrop-blur-sm">
-              <div className="aspect-video bg-gradient-to-br from-black to-gray-900 flex items-center justify-center p-8">
-                {/* Mock Interface */}
-                <div className="w-full max-w-4xl space-y-4">
-                  <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20">
-                    <div className="flex items-center gap-3">
-                      <div className="flex flex-col items-center px-3 py-2 bg-white/5 rounded-lg border border-white/10">
-                        <TrendingUp className="w-4 h-4 text-orange-400" />
-                        <span className="text-sm font-bold text-white">
-                          234
-                        </span>
-                      </div>
-                      <span className="font-medium text-white">
-                        Dark mode support
-                      </span>
-                    </div>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                      Under consideration
-                    </span>
+            {/* Main Dashboard Preview */}
+            <div className="relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent shadow-2xl overflow-hidden backdrop-blur-sm p-8">
+              <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-xl border border-white/10 overflow-hidden">
+                {/* Dashboard Header */}
+                <div className="border-b border-white/10 bg-white/[0.02] px-6 py-4 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-2 h-2 rounded-full bg-red-500/60"></div>
+                    <div className="w-2 h-2 rounded-full bg-yellow-500/60"></div>
+                    <div className="w-2 h-2 rounded-full bg-green-500/60"></div>
                   </div>
-                  <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-3">
-                      <div className="flex flex-col items-center px-3 py-2 bg-white/5 rounded-lg border border-white/10">
-                        <TrendingUp className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm font-bold text-white">
-                          187
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <Lock className="w-3 h-3" />
+                    <span>feedback.yourcompany.com</span>
+                  </div>
+                  <div className="w-16"></div>
+                </div>
+
+                {/* Dashboard Content */}
+                <div className="p-6 space-y-6">
+                  {/* Stats Row */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                      <div className="flex items-center gap-2 text-gray-400 text-xs mb-2">
+                        <MessageSquare className="w-3 h-3" />
+                        <span>Total Feedback</span>
+                      </div>
+                      <p className="text-2xl font-bold text-white">1,247</p>
+                      <p className="text-xs text-emerald-400 mt-1">
+                        +12% this week
+                      </p>
+                    </div>
+                    <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                      <div className="flex items-center gap-2 text-gray-400 text-xs mb-2">
+                        <Users className="w-3 h-3" />
+                        <span>Active Users</span>
+                      </div>
+                      <p className="text-2xl font-bold text-white">8,432</p>
+                      <p className="text-xs text-emerald-400 mt-1">
+                        +23% this month
+                      </p>
+                    </div>
+                    <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                      <div className="flex items-center gap-2 text-gray-400 text-xs mb-2">
+                        <Clock className="w-3 h-3" />
+                        <span>Avg. Response</span>
+                      </div>
+                      <p className="text-2xl font-bold text-white">2.3h</p>
+                      <p className="text-xs text-emerald-400 mt-1">
+                        -45% faster
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Trending Features */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-semibold text-white">
+                        Trending Features
+                      </h3>
+                      <span className="text-xs text-gray-500">Last 7 days</span>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="bg-gradient-to-r from-orange-500/10 via-amber-500/5 to-transparent border border-orange-500/20 rounded-lg p-3 flex items-center justify-between group hover:border-orange-500/40 transition">
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col items-center justify-center bg-orange-500/10 rounded-lg px-2.5 py-1.5 border border-orange-500/20 min-w-[3rem]">
+                            <TrendingUp className="w-3.5 h-3.5 text-orange-400 mb-0.5" />
+                            <span className="text-xs font-bold text-white">
+                              234
+                            </span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-white">
+                              Dark mode support
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              Most requested this week
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            In Progress
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-orange-400 transition" />
+                        </div>
+                      </div>
+                      <div className="bg-white/[0.02] border border-white/10 rounded-lg p-3 flex items-center justify-between hover:bg-white/5 transition">
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col items-center justify-center bg-white/5 rounded-lg px-2.5 py-1.5 border border-white/10 min-w-[3rem]">
+                            <TrendingUp className="w-3.5 h-3.5 text-gray-400 mb-0.5" />
+                            <span className="text-xs font-bold text-white">
+                              187
+                            </span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-white">
+                              Mobile app
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              Gaining traction
+                            </p>
+                          </div>
+                        </div>
+                        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                          Planned
                         </span>
                       </div>
-                      <span className="font-medium text-white">Mobile app</span>
+                      <div className="bg-white/[0.02] border border-white/10 rounded-lg p-3 flex items-center justify-between hover:bg-white/5 transition">
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col items-center justify-center bg-white/5 rounded-lg px-2.5 py-1.5 border border-white/10 min-w-[3rem]">
+                            <TrendingUp className="w-3.5 h-3.5 text-gray-400 mb-0.5" />
+                            <span className="text-xs font-bold text-white">
+                              142
+                            </span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-white">
+                              API webhooks
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              High priority
+                            </p>
+                          </div>
+                        </div>
+                        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-500/20 text-gray-300 border border-gray-500/30">
+                          Considering
+                        </span>
+                      </div>
                     </div>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                      Planned
-                    </span>
                   </div>
                 </div>
               </div>
             </div>
-            {/* Floating stat */}
-            <div
-              className="absolute -top-6 -left-6 bg-black/80 backdrop-blur-xl rounded-xl shadow-xl p-4 border border-white/10 animate-bounce"
-              style={{ animationDuration: "3s" }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
+
+            {/* Floating Cards */}
+            <div className="absolute -right-6 top-1/4 bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 backdrop-blur-xl rounded-xl shadow-2xl p-4 border border-emerald-500/20 max-w-xs animate-float">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                  <Send className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400">Ideas collected</p>
-                  <p className="text-lg font-bold text-white">1,247</p>
+                  <p className="text-xs font-semibold text-emerald-300 mb-1">
+                    Announcement Sent
+                  </p>
+                  <p className="text-xs text-gray-300 leading-relaxed">
+                    "Dark Mode is Live!" sent to 234 users
+                  </p>
+                  <div className="mt-2 flex items-center gap-2 text-xs text-gray-400">
+                    <span className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                      92% opened
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <div
+              className="absolute -left-6 bottom-1/4 bg-gradient-to-br from-purple-500/10 to-purple-600/5 backdrop-blur-xl rounded-xl shadow-2xl p-4 border border-purple-500/20 max-w-xs animate-float"
+              style={{ animationDelay: "1s" }}
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-purple-300 mb-1">
+                    AI Generated
+                  </p>
+                  <p className="text-xs text-gray-300 leading-relaxed">
+                    Email copy created in 2 seconds
+                  </p>
+                  <div className="mt-2 pt-2 border-t border-white/10">
+                    <p className="text-xs text-gray-400">Ready to send</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <style jsx>{`
+              @keyframes float {
+                0%,
+                100% {
+                  transform: translateY(0px);
+                }
+                50% {
+                  transform: translateY(-10px);
+                }
+              }
+              .animate-float {
+                animation: float 3s ease-in-out infinite;
+              }
+            `}</style>
           </div>
         </div>
       </section>
 
       {/* Social Proof */}
-      <section className="py-12 px-6 border-y border-white/5">
+      <section id="customers" className="py-12 px-6 border-y border-white/5">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-sm text-gray-500 mb-8 uppercase tracking-wider">
             Trusted by leading teams
           </p>
+
           <div className="flex flex-wrap justify-center items-center gap-12">
             <a
               href="https://trysynq.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl font-bold text-white/30 hover:text-white/50 transition"
+              className="transition opacity-60 hover:opacity-100"
             >
-              Synq
+              <img
+                src="https://trysynq.com/brand/synq-icon.png"
+                alt="Synq logo"
+                className="h-12 w-auto"
+              />
             </a>
-            <div className="text-2xl font-bold text-white/30">[Logo 2]</div>
-            <div className="text-2xl font-bold text-white/30">[Logo 3]</div>
-            <div className="text-2xl font-bold text-white/30">[Logo 4]</div>
-            <div className="text-2xl font-bold text-white/30">[Logo 5]</div>
           </div>
         </div>
       </section>
@@ -567,7 +713,7 @@ export default function HintboardModernLanding() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-24 px-6 relative overflow-hidden">
+      {/*<section className="py-24 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-amber-500/10 -z-10"></div>
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-12 text-center">
@@ -591,10 +737,10 @@ export default function HintboardModernLanding() {
             </div>
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* Testimonials */}
-      <section className="py-24 px-6">
+      {/*<section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -642,99 +788,10 @@ export default function HintboardModernLanding() {
             ))}
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* Pricing */}
-      <section id="pricing" className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white">
-              Simple, transparent pricing
-            </h2>
-            <p className="text-xl text-gray-400">
-              Start free. Upgrade when you're ready. Cancel anytime.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Monthly */}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-8 space-y-6 hover:border-white/20 transition backdrop-blur-sm">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">Monthly</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-white">$15</span>
-                  <span className="text-gray-400">/month</span>
-                </div>
-              </div>
-
-              <ul className="space-y-3">
-                {[
-                  "Unlimited feedback posts",
-                  "Unlimited subscribers",
-                  "AI announcement generation",
-                  "Public roadmap",
-                  "Custom domain",
-                  "Email support",
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-orange-400 flex-shrink-0" />
-                    <span className="text-gray-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button className="w-full py-4 bg-white/10 text-white rounded-xl font-semibold hover:bg-white/20 transition border border-white/10">
-                Start Free Trial
-              </button>
-            </div>
-
-            {/* Yearly - Featured */}
-            <div className="rounded-2xl border-2 border-orange-500 bg-gradient-to-br from-orange-500/10 to-amber-500/10 p-8 space-y-6 relative hover:shadow-lg hover:shadow-orange-500/20 transition backdrop-blur-sm">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold rounded-full shadow-lg">
-                SAVE 20%
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">Yearly</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-white">$12</span>
-                  <span className="text-gray-400">/month</span>
-                </div>
-                <p className="text-sm text-gray-400 mt-1">
-                  Billed $144 annually
-                </p>
-              </div>
-
-              <ul className="space-y-3">
-                {[
-                  "Everything in Monthly",
-                  "Priority support",
-                  "Early access to features",
-                  "Remove Hintboard branding",
-                  "Advanced analytics",
-                  "Linear integration",
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-orange-400 flex-shrink-0" />
-                    <span className="text-gray-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href="/register"
-                className="block w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/20 transition text-center"
-              >
-                Start Free Trial
-              </a>
-            </div>
-          </div>
-
-          <p className="text-center text-gray-400 mt-8">
-            14-day free trial • No credit card required • Cancel anytime
-          </p>
-        </div>
-      </section>
+      <PricingSection />
 
       {/* FAQ Section */}
       <section className="py-24 px-6">
@@ -790,7 +847,7 @@ export default function HintboardModernLanding() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <a
-              href="/register"
+              href="/signup"
               className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/20 transition flex items-center justify-center gap-2"
             >
               Start Free Trial
@@ -823,26 +880,6 @@ export default function HintboardModernLanding() {
                 The all-in-one hub for product feedback, roadmaps, and automated
                 announcements.
               </p>
-              <div className="flex gap-4">
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  Twitter
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  GitHub
-                </a>
-              </div>
             </div>
 
             {/* Product */}
@@ -865,17 +902,10 @@ export default function HintboardModernLanding() {
                     Pricing
                   </a>
                 </li>
+
                 <li>
                   <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition"
-                  >
-                    Changelog
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
+                    href="https://feedback.hintboard.app/roadmap"
                     className="text-gray-400 hover:text-white transition"
                   >
                     Roadmap
@@ -937,7 +967,7 @@ export default function HintboardModernLanding() {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="#customers"
                     className="text-gray-400 hover:text-white transition"
                   >
                     Customers

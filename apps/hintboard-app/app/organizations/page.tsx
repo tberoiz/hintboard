@@ -1,12 +1,11 @@
 import { redirect } from "next/navigation";
 import { OrganizationService, UserService } from "@hintboard/supabase/services";
-import { Card, CardContent, Button } from "@hintboard/ui/component";
-import { Plus } from "lucide-react";
-
+import { Card, CardContent } from "@hintboard/ui/component";
 import Link from "next/link";
 import { NavUser } from "@/shared/layouts/header/nav-user";
 import { HintboardIcon } from "@/shared/icons/icons";
 import { OrganizationsClient } from "@/domains/organizations/components/organization-client";
+import { CreateOrganizationButton } from "@/domains/organizations/components/create-organization-button";
 
 export default async function OrganizationsPage() {
   // Fetch user info server-side
@@ -15,7 +14,6 @@ export default async function OrganizationsPage() {
 
   try {
     userInfo = await UserService.getUserInfo("server");
-
     if (!userInfo?.id) {
       redirect("/");
     }
@@ -69,14 +67,9 @@ export default async function OrganizationsPage() {
           </CardContent>
         </Card>
 
-        {/* Create New Company Button */}
+        {/* Create New Company Button - Now with subscription limit check */}
         <div className="text-center">
-          <Link href="/organizations/new">
-            <Button variant="link" className="text-primary">
-              <Plus className="h-4 w-4 mr-2" />
-              Create new company
-            </Button>
-          </Link>
+          <CreateOrganizationButton />
         </div>
       </main>
     </div>

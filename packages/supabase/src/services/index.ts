@@ -25,3 +25,9 @@ export {
   type ActivityType,
   type IdeaActivity,
 } from "./activities-services";
+export {
+  SubscriptionLimitsService,
+  type PlanLimits,
+  type LimitType,
+  type FeatureType,
+} from "./subscription-limits-service";

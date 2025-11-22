@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@hintboard/ui/component";
 
-import { Bell, Plus, Filter, ChevronDown, Sparkles } from "lucide-react";
+import { Bell, Plus, Filter, ChevronDown, Sparkles, Crown } from "lucide-react";
 import {
   AnnouncementsService,
   AnnouncementWithDetails,
@@ -25,6 +25,8 @@ import {
 import { format } from "date-fns";
 import { useOrganization } from "@/shared/contexts/organizations-context";
 import { GenerateFromIdeasModal } from "@/domains/announcements/components/generate-from-ideas-modal";
+import { useSubscriptionLimits } from "@/shared/contexts/subscription-limits-context";
+import { UpgradeModal } from "@/features/billing/components/upgrade-modal";
 
 export default function AnnouncementsPage() {
   const router = useRouter();
@@ -44,6 +46,9 @@ export default function AnnouncementsPage() {
   const isAdmin = organization?.role === "admin";
 
   const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const { checkLimit, loading: limitsLoading } = useSubscriptionLimits();
+  const canGenerateAi = !limitsLoading && checkLimit("ai_announcements");
 
   useEffect(() => {
     if (organization?.id) {
@@ -206,11 +211,20 @@ export default function AnnouncementsPage() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => setShowGenerateModal(true)}
+                    onClick={() => {
+                      if (canGenerateAi) {
+                        setShowGenerateModal(true);
+                      } else {
+                        setShowUpgradeModal(true);
+                      }
+                    }}
                     className="cursor-pointer"
                   >
                     <Sparkles className="h-4 w-4 mr-2" />
                     Generate from Ideas
+                    {!canGenerateAi && (
+                      <Crown className="h-4 w-4 ml-2 text-amber-500" />
+                    )}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -316,12 +330,20 @@ export default function AnnouncementsPage() {
           onOpenChange={setShowGenerateModal}
           organizationId={organization?.id}
           organizationName={organization?.name}
+          organizationSlug={organization?.slug}
           onGenerate={handleGenerate}
           title="Generate Announcement from Ideas"
           description="Select ideas to include in your AI-generated announcement"
           generateButtonText="Generate Announcement"
+          onUpgradeRequest={() => setShowUpgradeModal(true)}
         />
       )}
+      <UpgradeModal
+        open={showUpgradeModal}
+        onOpenChange={setShowUpgradeModal}
+        trialDaysRemaining={0}
+        organizationName={organization?.name}
+      />
     </div>
   );
 }

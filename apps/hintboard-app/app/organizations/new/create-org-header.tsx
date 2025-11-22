@@ -31,7 +31,10 @@ export function CreateOrgHeader() {
   return (
     <header className="border-b">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-primary">
+        <Link
+          href="https://hitboard.app/"
+          className="text-2xl font-bold text-primary"
+        >
           <HintboardIcon />
         </Link>
 

@@ -15,6 +15,34 @@ export interface AttachmentMetadata {
 
 export class AttachmentsService extends ServiceBase {
   /**
+   * Get all attachments for a specific idea
+   */
+  static async getIdeaAttachments(
+    ideaId: string,
+    context: "server" | "client" = "server",
+  ): Promise<AttachmentRow[]> {
+    return this.execute(
+      async () => {
+        const client = await this.getClient(context);
+
+        const { data, error } = await client
+          .from("attachments")
+          .select("*")
+          .eq("idea_id", ideaId)
+          .order("created_at", { ascending: true });
+
+        if (error) throw error;
+
+        return data || [];
+      },
+      {
+        service: "AttachmentsService",
+        method: "getIdeaAttachments",
+      },
+    );
+  }
+
+  /**
    * Upload a file and create attachment record
    * Works for both ideas and comments
    */

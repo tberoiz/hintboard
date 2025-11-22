@@ -1,8 +1,14 @@
 "use client";
 import React from "react";
-import { Badge, Button } from "@hintboard/ui/component";
 import { HStack, VStack } from "@hintboard/ui/component";
-import { MessageSquare, TrendingUp, Lock, Pin, Bug } from "lucide-react";
+import {
+  MessageSquare,
+  TrendingUp,
+  Lock,
+  Pin,
+  Bug,
+  ArrowRight,
+} from "lucide-react";
 import {
   IdeasService,
   IdeaWithUserInfo,
@@ -11,7 +17,6 @@ import {
 } from "@hintboard/supabase/services";
 import { toast } from "sonner";
 import { cn } from "@hintboard/ui/utils";
-import { CreatorUser } from "@/shared/creator-user";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function IdeaCard({ idea }: { idea: IdeaWithUserInfo }) {
@@ -19,6 +24,8 @@ export function IdeaCard({ idea }: { idea: IdeaWithUserInfo }) {
   const [myVote, setMyVote] = React.useState(idea.my_vote || false);
   const [voteCount, setVoteCount] = React.useState(idea.vote_count);
   const queryClient = useQueryClient();
+
+  const [isAnimating, setIsAnimating] = React.useState(false);
 
   const handleVoteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -28,19 +35,18 @@ export function IdeaCard({ idea }: { idea: IdeaWithUserInfo }) {
     setIsVoting(true);
     const wasVoted = myVote;
 
-    // Optimistic UI update
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 600);
+
     setMyVote(!wasVoted);
     setVoteCount((prev: any) => (wasVoted ? prev - 1 : prev + 1));
 
     try {
-      // Get or create user auth (will create anonymous if needed)
       const user = await UserService.requireAuth();
 
-      // If a new anonymous user was just created, invalidate the user query
       if (user.justCreated) {
         queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
-        // Only show welcome toast for newly created anonymous users
         if (user.isAnonymous) {
           toast.success(
             `Welcome, ${user.fullName}! Your vote has been counted.`,
@@ -49,7 +55,6 @@ export function IdeaCard({ idea }: { idea: IdeaWithUserInfo }) {
         }
       }
 
-      // Perform the vote action
       if (wasVoted) {
         await IdeasService.voteIdea(idea.idea_id, 0, "client");
       } else {
@@ -59,7 +64,6 @@ export function IdeaCard({ idea }: { idea: IdeaWithUserInfo }) {
       console.error("Error voting:", error);
       toast.error("Failed to vote. Please try again.");
 
-      // Revert optimistic update on error
       setMyVote(wasVoted);
       setVoteCount((prev: any) => (wasVoted ? prev + 1 : prev - 1));
     } finally {
@@ -70,145 +74,106 @@ export function IdeaCard({ idea }: { idea: IdeaWithUserInfo }) {
   return (
     <div
       className={cn(
-        "group relative rounded-xl border border-border/50 bg-card hover:border-border hover:shadow-md transition-all duration-200 overflow-hidden",
-        { "border-amber-500/40 bg-amber-500/5": idea.is_pinned },
+        "group rounded-xl p-4 flex items-center justify-between transition-all cursor-pointer border",
+        idea.is_pinned
+          ? "bg-[linear-gradient(to_right,hsl(var(--idea-card-pinned-from)),hsl(var(--idea-card-pinned-via)),hsl(var(--idea-card-pinned-to)))] border-[hsl(var(--idea-card-pinned-border))] hover:border-[hsl(var(--idea-card-pinned-border-hover))] hover:shadow-sm"
+          : "bg-card border-border hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm",
       )}
     >
-      {/* Pinned indicator stripe */}
-      {idea.is_pinned && (
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
-      )}
-
-      <VStack gap={5} className="p-5">
-        {/* Header Section */}
-        <HStack gap={4} align="start" justify="between">
-          <CreatorUser
-            name={idea.creator_name}
-            email={idea.creator_email}
-            avatar={idea.creator_avatar}
-            organization={idea.creator_organization}
-            createdAt={idea.created_at}
-            size="md"
-            className="flex-1 min-w-0"
-          />
-
-          {/* Status Badge */}
-          {idea.status_name && (
-            <Badge
-              variant="secondary"
-              className="rounded-full px-3 py-1 text-xs font-medium shadow-sm border flex-shrink-0"
-              style={{
-                backgroundColor: idea.status_color
-                  ? `${idea.status_color}15`
-                  : undefined,
-                borderColor: idea.status_color
-                  ? `${idea.status_color}40`
-                  : undefined,
-                color: idea.status_color || undefined,
-              }}
-            >
-              {idea.status_name}
-            </Badge>
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        {/* Vote Button */}
+        <button
+          onClick={handleVoteClick}
+          disabled={isVoting}
+          className={cn(
+            "flex flex-col items-center justify-center rounded-lg px-3 py-2 border min-w-[3rem] flex-shrink-0 transition-all",
+            myVote
+              ? "bg-[hsl(var(--idea-card-vote-bg))] border-[hsl(var(--idea-card-vote-border))] shadow-sm"
+              : "bg-[hsl(var(--idea-card-vote-inactive-bg))] border-[hsl(var(--idea-card-vote-inactive-border))] hover:bg-[hsl(var(--idea-card-vote-inactive-bg-hover))] hover:border-[hsl(var(--idea-card-vote-inactive-border-hover))]",
           )}
-        </HStack>
-
-        {/* Title Section */}
-        <VStack gap={3}>
-          <HStack gap={2} align="start">
-            <h3 className="text-base font-bold text-foreground leading-tight flex-1">
-              {idea.title}
-            </h3>
-            <HStack gap={1.5} className="flex-shrink-0">
-              {/* Show red bug icon if idea is marked as bug */}
-              {idea.is_bug && (
-                <div className="rounded-full bg-red-500/10 p-1.5">
-                  <Bug className="w-3.5 h-3.5 text-red-600 fill-red-600" />
-                </div>
-              )}
-
-              {idea.is_pinned && (
-                <div className="rounded-full bg-amber-500/10 p-1.5">
-                  <Pin className="w-3.5 h-3.5 text-amber-600 fill-amber-600" />
-                </div>
-              )}
-
-              {idea.is_private && (
-                <div className="rounded-full bg-muted p-1.5">
-                  <Lock className="w-3.5 h-3.5 text-muted-foreground" />
-                </div>
-              )}
-            </HStack>
-          </HStack>
-
-          {/* Description */}
-          {idea.description && (
-            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-              {idea.description}
-            </p>
-          )}
-        </VStack>
-
-        {/* Topics */}
-        {idea.topics && idea.topics.length > 0 && (
-          <HStack gap={1.5} wrap="wrap">
-            {idea.topics.map((topic: TopicRow) => (
-              <Badge
-                key={topic.id}
-                variant="outline"
-                className="rounded-full px-2.5 py-0.5 text-xs font-normal border-border/60 hover:bg-accent/50 transition-colors"
-              >
-                {topic.name}
-              </Badge>
-            ))}
-          </HStack>
-        )}
-
-        {/* Footer Actions */}
-        <HStack
-          gap={0}
-          align="center"
-          justify="between"
-          className="pt-3 border-t border-border/30"
         >
-          {/* Vote Button */}
-          <Button
-            variant={myVote ? "default" : "ghost"}
-            size="sm"
+          <TrendingUp
             className={cn(
-              "h-9 gap-2 font-semibold transition-all duration-200",
+              "w-4 h-4 mb-0.5",
               myVote
-                ? "bg-primary hover:bg-primary/90 shadow-sm"
-                : "hover:bg-accent",
+                ? "text-[hsl(var(--idea-card-vote-icon))]"
+                : "text-[hsl(var(--idea-card-vote-inactive-icon))]",
             )}
-            onClick={handleVoteClick}
-            disabled={isVoting}
+          />
+          <span
+            className={cn(
+              "text-xs font-semibold",
+              myVote
+                ? "text-[hsl(var(--idea-card-vote-text))]"
+                : "text-[hsl(var(--idea-card-vote-inactive-text))]",
+            )}
           >
-            <TrendingUp
-              className={cn(
-                "w-4 h-4 transition-all duration-200",
-                myVote && "fill-current",
-              )}
-            />
-            <span className="text-sm tabular-nums">{voteCount}</span>
-            {myVote && <span className="text-xs opacity-90">Voted</span>}
-          </Button>
+            {voteCount}
+          </span>
+        </button>
 
-          {/* Comments */}
-          <HStack
-            gap={2}
-            align="center"
-            className="px-3 py-2 rounded-full bg-muted/50 hover:bg-muted transition-colors"
-          >
-            <MessageSquare className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground tabular-nums">
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <p className="text-sm font-medium text-foreground truncate">
+              {idea.title}
+            </p>
+            {/* Badges */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {idea.is_bug && (
+                <div className="rounded-full bg-[hsl(var(--idea-card-badge-bug-bg))] p-1 border border-[hsl(var(--idea-card-badge-bug-border))]">
+                  <Bug className="w-3 h-3 text-[hsl(var(--idea-card-badge-bug-icon))]" />
+                </div>
+              )}
+              {idea.is_pinned && (
+                <div className="rounded-full bg-[hsl(var(--idea-card-badge-pin-bg))] p-1 border border-[hsl(var(--idea-card-badge-pin-border))]">
+                  <Pin className="w-3 h-3 text-[hsl(var(--idea-card-badge-pin-icon))]" />
+                </div>
+              )}
+              {idea.is_private && (
+                <div className="rounded-full bg-[hsl(var(--idea-card-badge-private-bg))] p-1 border border-[hsl(var(--idea-card-badge-private-border))]">
+                  <Lock className="w-3 h-3 text-[hsl(var(--idea-card-badge-private-icon))]" />
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <MessageSquare className="w-3.5 h-3.5" />
               {idea.comment_count}
             </span>
-            <span className="text-xs text-muted-foreground">
-              {idea.comment_count === 1 ? "comment" : "comments"}
-            </span>
-          </HStack>
-        </HStack>
-      </VStack>
+            {idea.topics && idea.topics.length > 0 && (
+              <>
+                <span>•</span>
+                <span className="truncate">
+                  {idea.topics.map((t: TopicRow) => t.name).join(", ")}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Status Badge */}
+      <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+        {idea.status_name && (
+          <span
+            className="px-3 py-1.5 rounded-full text-xs font-medium border"
+            style={{
+              backgroundColor: idea.status_color
+                ? `${idea.status_color}15`
+                : "rgb(243, 244, 246)",
+              color: idea.status_color || "rgb(75, 85, 99)",
+              borderColor: idea.status_color
+                ? `${idea.status_color}30`
+                : "rgb(229, 231, 235)",
+            }}
+          >
+            {idea.status_name}
+          </span>
+        )}
+        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+      </div>
     </div>
   );
 }

@@ -83,12 +83,32 @@ const config = {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(100%)" },
         },
+        // Vote button animations
+        "vote-ping": {
+          "0%": { transform: "scale(1)", opacity: "0.8" },
+          "50%": { transform: "scale(1.2)", opacity: "0.4" },
+          "100%": { transform: "scale(1.5)", opacity: "0" },
+        },
+        "vote-pop": {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.15)" },
+          "100%": { transform: "scale(1)" },
+        },
+        "vote-rotate": {
+          "0%": { transform: "rotate(0deg) scale(1)" },
+          "50%": { transform: "rotate(12deg) scale(1.25)" },
+          "100%": { transform: "rotate(0deg) scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         shine: "shine 8s linear infinite",
+        // Vote button animations
+        "vote-ping": "vote-ping 0.6s cubic-bezier(0, 0, 0.2, 1)",
+        "vote-pop": "vote-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "vote-rotate": "vote-rotate 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
     },
   },

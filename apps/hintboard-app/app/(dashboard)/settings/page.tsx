@@ -107,9 +107,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="h-full flex flex-col max-w-6xl mx-auto p-6">
       {/* Page Header */}
-      <div className="mb-8">
+      <div className="mb-8 flex-shrink-0">
         <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
         <p className="text-muted-foreground mt-1">
           {isAnonymous
@@ -132,104 +132,106 @@ export default function SettingsPage() {
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}
-        className="flex gap-8"
+        className="flex gap-8 flex-1 min-h-0"
       >
         {/* Left Sidebar - Tabs List */}
         <aside className="w-64 flex-shrink-0">
-          <TabsList className="flex flex-col h-auto w-full bg-transparent space-y-1">
-            {/* Admin/Owner Tabs */}
-            {isTabAllowed("general") && (
-              <TabsTrigger
-                value="general"
-                className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-              >
-                <SettingsIcon className="h-4 w-4 mr-3" />
-                General
-              </TabsTrigger>
-            )}
+          <div className="sticky top-6">
+            <TabsList className="flex flex-col h-auto w-full bg-transparent space-y-1">
+              {/* Admin/Owner Tabs */}
+              {isTabAllowed("general") && (
+                <TabsTrigger
+                  value="general"
+                  className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                >
+                  <SettingsIcon className="h-4 w-4 mr-3" />
+                  General
+                </TabsTrigger>
+              )}
 
-            {isTabAllowed("statuses") && (
-              <TabsTrigger
-                value="statuses"
-                className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-              >
-                <ListOrdered className="h-4 w-4 mr-3" />
-                Statuses
-              </TabsTrigger>
-            )}
+              {isTabAllowed("statuses") && (
+                <TabsTrigger
+                  value="statuses"
+                  className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                >
+                  <ListOrdered className="h-4 w-4 mr-3" />
+                  Statuses
+                </TabsTrigger>
+              )}
 
-            {isTabAllowed("topics") && (
-              <TabsTrigger
-                value="topics"
-                className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-              >
-                <Hash className="h-4 w-4 mr-3" />
-                Topics
-              </TabsTrigger>
-            )}
+              {isTabAllowed("topics") && (
+                <TabsTrigger
+                  value="topics"
+                  className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                >
+                  <Hash className="h-4 w-4 mr-3" />
+                  Topics
+                </TabsTrigger>
+              )}
 
-            {isTabAllowed("categories") && (
-              <TabsTrigger
-                value="categories"
-                className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-              >
-                <Tag className="h-4 w-4 mr-3" />
-                Announcement Categories
-              </TabsTrigger>
-            )}
+              {isTabAllowed("categories") && (
+                <TabsTrigger
+                  value="categories"
+                  className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                >
+                  <Tag className="h-4 w-4 mr-3" />
+                  Announcement Categories
+                </TabsTrigger>
+              )}
 
-            {isTabAllowed("billing") && (
-              <TabsTrigger
-                value="billing"
-                className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-              >
-                <CreditCard className="h-4 w-4 mr-3" />
-                Billing
-              </TabsTrigger>
-            )}
+              {isTabAllowed("billing") && (
+                <TabsTrigger
+                  value="billing"
+                  className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                >
+                  <CreditCard className="h-4 w-4 mr-3" />
+                  Billing
+                </TabsTrigger>
+              )}
 
-            {isTabAllowed("invites") && (
-              <TabsTrigger
-                value="invites"
-                className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-              >
-                <Users className="h-4 w-4 mr-3" />
-                Invite Users
-              </TabsTrigger>
-            )}
+              {isTabAllowed("invites") && (
+                <TabsTrigger
+                  value="invites"
+                  className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                >
+                  <Users className="h-4 w-4 mr-3" />
+                  Invite Users
+                </TabsTrigger>
+              )}
 
-            {/* Divider */}
-            {isAdmin && (
-              <div className="py-2">
-                <div className="h-px bg-border" />
-              </div>
-            )}
+              {/* Divider */}
+              {isAdmin && (
+                <div className="py-2">
+                  <div className="h-px bg-border" />
+                </div>
+              )}
 
-            {/* User Tabs */}
-            {isTabAllowed("profile") && (
-              <TabsTrigger
-                value="profile"
-                className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-              >
-                <User className="h-4 w-4 mr-3" />
-                Profile
-              </TabsTrigger>
-            )}
+              {/* User Tabs */}
+              {isTabAllowed("profile") && (
+                <TabsTrigger
+                  value="profile"
+                  className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                >
+                  <User className="h-4 w-4 mr-3" />
+                  Profile
+                </TabsTrigger>
+              )}
 
-            {isTabAllowed("content") && (
-              <TabsTrigger
-                value="content"
-                className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-              >
-                <MessageSquare className="h-4 w-4 mr-3" />
-                My Content
-              </TabsTrigger>
-            )}
-          </TabsList>
+              {isTabAllowed("content") && (
+                <TabsTrigger
+                  value="content"
+                  className="w-full justify-start px-4 py-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                >
+                  <MessageSquare className="h-4 w-4 mr-3" />
+                  My Content
+                </TabsTrigger>
+              )}
+            </TabsList>
+          </div>
         </aside>
 
-        {/* Right Content Area */}
-        <main className="flex-1 min-w-0">
+        {/* Right Content Area - Scrollable */}
+        <main className="flex-1 min-w-0 overflow-y-auto pr-2">
           {/* Admin Tabs Content */}
           {isTabAllowed("general") && (
             <TabsContent value="general" className="mt-0 space-y-6">

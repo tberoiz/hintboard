@@ -10,18 +10,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@hintboard/ui/component";
-import { Sparkles } from "lucide-react";
+import { Crown, Loader2, Sparkles } from "lucide-react";
 import { IdeasService, IdeaWithUserInfo } from "@hintboard/supabase/services";
+import { useSubscriptionLimits } from "@/shared/contexts/subscription-limits-context";
 
 interface GenerateFromIdeasModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   organizationId: string;
-  organizationName?: string;
+  organizationName: string;
+  organizationSlug: string;
   onGenerate: (content: string, selectedIdeaIds: string[]) => Promise<void>;
   title?: string;
   description?: string;
   generateButtonText?: string;
+  onUpgradeRequest?: () => void;
 }
 
 export function GenerateFromIdeasModal({
@@ -29,16 +32,24 @@ export function GenerateFromIdeasModal({
   onOpenChange,
   organizationId,
   organizationName,
+  organizationSlug,
   onGenerate,
   title = "Generate from Ideas",
   description = "Select ideas to include in your AI-generated content",
   generateButtonText = "Generate",
+  onUpgradeRequest,
 }: GenerateFromIdeasModalProps) {
   const [ideas, setIdeas] = useState<IdeaWithUserInfo[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [loadingIdeas, setLoadingIdeas] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
+  const {
+    checkLimit,
+    loading: limitsLoading,
+    incrementUsage,
+  } = useSubscriptionLimits();
+  const canGenerateAi = !limitsLoading && checkLimit("ai_announcements");
 
   // Load ideas when modal opens
   useEffect(() => {
@@ -92,6 +103,11 @@ export function GenerateFromIdeasModal({
   };
 
   const handleGenerate = async () => {
+    if (!canGenerateAi) {
+      onUpgradeRequest?.();
+      return;
+    }
+
     if (selectedIds.length === 0) {
       setError("Please select at least one idea");
       return;
@@ -111,6 +127,7 @@ export function GenerateFromIdeasModal({
           ideaIds: selectedIds,
           organizationId: organizationId,
           organizationName: organizationName,
+          organizationSlug: organizationSlug,
         }),
       });
 
@@ -122,6 +139,7 @@ export function GenerateFromIdeasModal({
 
       // Call the parent's onGenerate callback with the generated content
       await onGenerate(data, selectedIds);
+      incrementUsage("ai_announcements");
       // Close modal on success
       onOpenChange(false);
     } catch (err) {
@@ -247,24 +265,46 @@ export function GenerateFromIdeasModal({
           )}
 
           {/* Generate Button */}
-          <div className="mt-4 pt-4 border-t">
-            <Button
-              onClick={handleGenerate}
-              disabled={selectedIds.length === 0 || generating}
-              className="w-full"
-            >
-              {generating ? (
-                <>
-                  <span className="animate-spin mr-2">⏳</span>
-                  Generating...
-                </>
-              ) : (
-                <>
+          <div className="mt-4 pt-4 border-t space-y-3">
+            {limitsLoading ? (
+              <Button disabled className="w-full">
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Checking limits...
+              </Button>
+            ) : !canGenerateAi ? (
+              <>
+                <Button
+                  onClick={() => onUpgradeRequest?.()}
+                  className="w-full text-primary"
+                  variant="outline"
+                >
                   <Sparkles className="h-4 w-4 mr-2" />
-                  {generateButtonText} ({selectedIds.length} ideas)
-                </>
-              )}
-            </Button>
+                  Upgrade to generate with AI
+                  <Crown className="h-4 w-4 ml-2 text-amber-500" />
+                </Button>
+                <p className="text-xs text-center text-muted-foreground">
+                  You&apos;ve reached your AI announcement limit.
+                </p>
+              </>
+            ) : (
+              <Button
+                onClick={handleGenerate}
+                disabled={selectedIds.length === 0 || generating}
+                className="w-full"
+              >
+                {generating ? (
+                  <>
+                    <span className="animate-spin mr-2">⏳</span>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    {generateButtonText} ({selectedIds.length} ideas)
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>

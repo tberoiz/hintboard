@@ -101,20 +101,85 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
 
   const status = mapStripeStatus(subscription.status);
 
+  // Get the price ID from the subscription
+  const priceId =
+    typeof subscription.items.data[0]?.price?.id === "string"
+      ? subscription.items.data[0].price.id
+      : null;
+
+  let planId: string | null = null;
+
+  // If we have a price ID, try to identify the plan
+  if (priceId) {
+    try {
+      const price = await stripe.prices.retrieve(priceId);
+
+      // Get the product ID from the price
+      const productId =
+        typeof price.product === "string" ? price.product : price.product?.id;
+
+      if (productId) {
+        // Fetch the product to get its name
+        const product = await stripe.products.retrieve(productId);
+        const planTier = identifyPlanFromProductName(product.name);
+
+        if (planTier) {
+          // Look up the plan_id from subscription_plans table
+          const { data: plan } = await supabase
+            .from("subscription_plans")
+            .select("id")
+            .eq("name", planTier)
+            .single();
+
+          if (plan?.id) {
+            planId = plan.id;
+            console.log(
+              `📦 Identified plan: ${planTier} (plan_id: ${planId}) from product: ${product.name}`,
+            );
+          } else {
+            console.warn(
+              `⚠️ Plan tier ${planTier} not found in subscription_plans table`,
+            );
+          }
+        } else {
+          console.warn(
+            `⚠️ Could not identify plan from product name: ${product.name}`,
+          );
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error fetching price or product info:", error);
+    }
+  }
+
   console.log(`📝 Updating subscription for user ${userId}:`, {
     subscriptionId: subscription.id,
     status,
+    planId,
   });
 
-  // Just UPDATE - don't upsert since the row always exists
+  // Update subscription with plan_id - this is all we need!
+  // The get_user_plan_limits() function will automatically use the new plan's limits
+  const updateData: {
+    stripe_customer_id: string;
+    stripe_subscription_id: string;
+    status: string;
+    updated_at: string;
+    plan_id?: string | null;
+  } = {
+    stripe_customer_id: subscription.customer as string,
+    stripe_subscription_id: subscription.id,
+    status,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (planId) {
+    updateData.plan_id = planId;
+  }
+
   const { error } = await supabase
     .from("user_subscriptions")
-    .update({
-      stripe_customer_id: subscription.customer as string,
-      stripe_subscription_id: subscription.id,
-      status,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateData)
     .eq("user_id", userId);
 
   if (error) {
@@ -130,12 +195,30 @@ async function handleSubscriptionCanceled(subscription: Stripe.Subscription) {
 
   console.log(`🚫 Canceling subscription for user ${userId}`);
 
+  // Get starter plan_id to revert user to free tier
+  const { data: starterPlan } = await supabase
+    .from("subscription_plans")
+    .select("id")
+    .eq("name", "starter")
+    .single();
+
+  const updateData: {
+    status: string;
+    updated_at: string;
+    plan_id?: string | null;
+  } = {
+    status: "canceled",
+    updated_at: new Date().toISOString(),
+  };
+
+  if (starterPlan?.id) {
+    updateData.plan_id = starterPlan.id;
+    console.log(`📦 Reverting to starter plan (plan_id: ${starterPlan.id})`);
+  }
+
   const { error } = await supabase
     .from("user_subscriptions")
-    .update({
-      status: "canceled",
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateData)
     .eq("user_id", userId);
 
   if (error) {
@@ -197,8 +280,22 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   console.log(`✅ Checkout completed: ${session.id}`);
+
   if (session.subscription) {
-    console.log(`📝 Subscription: ${session.subscription}`);
+    const subscriptionId =
+      typeof session.subscription === "string"
+        ? session.subscription
+        : session.subscription.id;
+
+    console.log(`📝 Fetching subscription: ${subscriptionId}`);
+
+    try {
+      // Fetch the full subscription object to trigger plan update
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      await handleSubscriptionUpdate(subscription);
+    } catch (error) {
+      console.error("❌ Error fetching subscription after checkout:", error);
+    }
   }
 }
 
@@ -220,4 +317,22 @@ function mapStripeStatus(
     default:
       return "canceled";
   }
+}
+
+/**
+ * Identify plan tier from Stripe product name
+ * Works with any product name containing the plan keywords
+ */
+function identifyPlanFromProductName(
+  productName: string | null | undefined,
+): "starter" | "growth" | "pro" | "enterprise" | null {
+  if (!productName) return null;
+  const lower = productName.toLowerCase();
+
+  if (lower.includes("starter")) return "starter";
+  if (lower.includes("growth")) return "growth";
+  if (lower.includes("pro")) return "pro";
+  if (lower.includes("enterprise")) return "enterprise";
+
+  return null;
 }

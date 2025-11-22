@@ -905,78 +905,263 @@ DECLARE
     v_status_planned UUID;
     v_status_in_development UUID;
     v_status_shipped UUID;
-    v_topic_welcome UUID;
+    v_topic_feature_request UUID;
     v_topic_improvement UUID;
-    v_topic_integrations UUID;
-    v_topic_styling UUID;
-    v_topic_misc UUID;
-    v_topic_bug_report UUID;
-    v_topic_deal_breaker UUID;
+    v_topic_bug_fix UUID;
+    v_topic_integration UUID;
+    v_topic_ui_ux UUID;
+    v_topic_performance UUID;
+    v_topic_documentation UUID;
+    v_category_product_updates UUID;
+    v_category_new_features UUID;
+    v_category_improvements UUID;
     v_idea_1 UUID;
     v_idea_2 UUID;
     v_idea_3 UUID;
+    v_announcement_1 UUID;
 BEGIN
-    INSERT INTO public.idea_statuses (organization_id, name, color, sort_order) VALUES (p_org_id, 'Under consideration', '#f59e0b', 0) RETURNING id INTO v_status_under_consideration;
-    INSERT INTO public.idea_statuses (organization_id, name, color, sort_order) VALUES (p_org_id, 'Planned', '#3b82f6', 1) RETURNING id INTO v_status_planned;
-    INSERT INTO public.idea_statuses (organization_id, name, color, sort_order) VALUES (p_org_id, 'In Development', '#8b5cf6', 2) RETURNING id INTO v_status_in_development;
-    INSERT INTO public.idea_statuses (organization_id, name, color, sort_order) VALUES (p_org_id, 'Shipped', '#10b981', 3) RETURNING id INTO v_status_shipped;
+    -- Create default statuses
+    INSERT INTO public.idea_statuses (organization_id, name, color, sort_order)
+    VALUES (p_org_id, 'Under consideration', '#f59e0b', 0)
+    RETURNING id INTO v_status_under_consideration;
 
-    INSERT INTO public.user_idea_topics (organization_id, name) VALUES (p_org_id, 'Welcome 👋') RETURNING id INTO v_topic_welcome;
-    INSERT INTO public.user_idea_topics (organization_id, name) VALUES (p_org_id, 'Improvement 🔥') RETURNING id INTO v_topic_improvement;
-    INSERT INTO public.user_idea_topics (organization_id, name) VALUES (p_org_id, 'Integrations 🔗') RETURNING id INTO v_topic_integrations;
-    INSERT INTO public.user_idea_topics (organization_id, name) VALUES (p_org_id, 'Styling 🎨') RETURNING id INTO v_topic_styling;
-    INSERT INTO public.user_idea_topics (organization_id, name) VALUES (p_org_id, 'Misc 💡') RETURNING id INTO v_topic_misc;
-    INSERT INTO public.user_idea_topics (organization_id, name) VALUES (p_org_id, 'Bug Report 🔧') RETURNING id INTO v_topic_bug_report;
-    INSERT INTO public.user_idea_topics (organization_id, name) VALUES (p_org_id, 'Deal Breaker 💔') RETURNING id INTO v_topic_deal_breaker;
+    INSERT INTO public.idea_statuses (organization_id, name, color, sort_order)
+    VALUES (p_org_id, 'Planned', '#3b82f6', 1)
+    RETURNING id INTO v_status_planned;
 
-    INSERT INTO public.ideas (organization_id, user_id, status_id, title, description, is_private, is_bug, is_archived, is_unprioritized, is_pinned)
-    VALUES (p_org_id, p_owner_id, v_status_under_consideration, '[Start here] Welcome to Hintt 🚀', 'Welcome to Hintt, your new Feedback, Roadmap and Announcements tool. Read through a few of these cards and get acquainted with the interface. Start by taking a look at each of the pages in the navigation.
+    INSERT INTO public.idea_statuses (organization_id, name, color, sort_order)
+    VALUES (p_org_id, 'In Development', '#8b5cf6', 2)
+    RETURNING id INTO v_status_in_development;
 
-**This is an example idea card** - you can delete it anytime. Ideas can be submitted by anyone in your team, and they''ll appear here for review and discussion.
+    INSERT INTO public.idea_statuses (organization_id, name, color, sort_order)
+    VALUES (p_org_id, 'Shipped', '#10b981', 3)
+    RETURNING id INTO v_status_shipped;
 
-Try interacting with this card:
-- Vote on it by clicking the number on the left
-- Leave a comment below
-- Add it to different topics or change its status
+    -- Create default topics
+    INSERT INTO public.user_idea_topics (organization_id, name)
+    VALUES (p_org_id, 'Feature Request ✨')
+    RETURNING id INTO v_topic_feature_request;
 
-When you''re ready, click "Submit an Idea" in the top right to create your first real idea!', false, false, false, false, true)
+    INSERT INTO public.user_idea_topics (organization_id, name)
+    VALUES (p_org_id, 'Improvement 🚀')
+    RETURNING id INTO v_topic_improvement;
+
+    INSERT INTO public.user_idea_topics (organization_id, name)
+    VALUES (p_org_id, 'Bug Fix 🐛')
+    RETURNING id INTO v_topic_bug_fix;
+
+    INSERT INTO public.user_idea_topics (organization_id, name)
+    VALUES (p_org_id, 'Integration 🔗')
+    RETURNING id INTO v_topic_integration;
+
+    INSERT INTO public.user_idea_topics (organization_id, name)
+    VALUES (p_org_id, 'UI/UX 🎨')
+    RETURNING id INTO v_topic_ui_ux;
+
+    INSERT INTO public.user_idea_topics (organization_id, name)
+    VALUES (p_org_id, 'Performance ⚡')
+    RETURNING id INTO v_topic_performance;
+
+    INSERT INTO public.user_idea_topics (organization_id, name)
+    VALUES (p_org_id, 'Documentation 📚')
+    RETURNING id INTO v_topic_documentation;
+
+    -- Create default announcement categories
+    INSERT INTO public.announcement_categories (organization_id, name, color, sort_order)
+    VALUES (p_org_id, 'Product Updates', '#3b82f6', 0)
+    RETURNING id INTO v_category_product_updates;
+
+    INSERT INTO public.announcement_categories (organization_id, name, color, sort_order)
+    VALUES (p_org_id, 'New Features', '#10b981', 1)
+    RETURNING id INTO v_category_new_features;
+
+    INSERT INTO public.announcement_categories (organization_id, name, color, sort_order)
+    VALUES (p_org_id, 'Improvements', '#f59e0b', 2)
+    RETURNING id INTO v_category_improvements;
+
+    -- Create example ideas
+    INSERT INTO public.ideas (
+        organization_id,
+        user_id,
+        status_id,
+        title,
+        description,
+        is_private,
+        is_bug,
+        is_archived,
+        is_unprioritized,
+        is_pinned
+    )
+    VALUES (
+        p_org_id,
+        p_owner_id,
+        v_status_under_consideration,
+        'Welcome to your Hintboard! 👋',
+        'Welcome to Hintboard - your all-in-one platform for collecting feedback, managing your roadmap, and sharing announcements with your users.
+
+**This is a demo idea card.** Your users can submit ideas just like this one, and you can organize them by status, topics, and priority.
+
+**Try these actions:**
+• Click the vote button on the left to upvote this idea
+• Leave a comment below to start a discussion
+• Change the status or add topics using the controls
+• Pin important ideas to keep them at the top
+• Mark ideas as private to keep them internal
+
+**What you can do with Hintboard:**
+• Collect and prioritize feature requests from your users
+• Build a public roadmap to show what you''re working on
+• Generate AI-powered announcement emails when features ship
+• Engage with your community through comments and reactions
+
+Feel free to explore and delete this example when you''re ready to start collecting real feedback!',
+        false,
+        false,
+        false,
+        false,
+        true
+    )
     RETURNING id INTO v_idea_1;
-    INSERT INTO public.idea_topic_map (idea_id, topic_id) VALUES (v_idea_1, v_topic_welcome);
 
-    INSERT INTO public.ideas (organization_id, user_id, status_id, title, description, is_private, is_bug, is_archived, is_unprioritized, is_pinned)
-    VALUES (p_org_id, p_owner_id, v_status_planned, '[Example Idea] More colour options', 'It would be great if we could add more colours to our app rather than the standard options. Perhaps a colour picker, like the one in the screenshot? [This is an Example Idea Card]
+    INSERT INTO public.idea_topic_map (idea_id, topic_id)
+    VALUES (v_idea_1, v_topic_feature_request);
 
-**Features we could include:**
-- Custom color picker
-- Preset color palettes
-- Save favorite colors
-- Theme customization
+    INSERT INTO public.ideas (
+        organization_id,
+        user_id,
+        status_id,
+        title,
+        description,
+        is_private,
+        is_bug,
+        is_archived,
+        is_unprioritized,
+        is_pinned
+    )
+    VALUES (
+        p_org_id,
+        p_owner_id,
+        v_status_planned,
+        'Dark mode support for better accessibility',
+        'Adding dark mode would make the platform more accessible and comfortable for users who prefer working in low-light environments.
 
-This would give users more flexibility in personalizing their workspace!', false, false, false, false, false)
+**Benefits:**
+• Reduces eye strain during extended use
+• Improves battery life on mobile devices
+• Provides a modern, polished user experience
+• Makes the platform more accessible
+
+**Implementation ideas:**
+• System preference detection
+• Manual toggle in user settings
+• Smooth transition animations
+• Consistent styling across all pages
+
+This feature has been highly requested by our community and would significantly improve the overall user experience.',
+        false,
+        false,
+        false,
+        false,
+        false
+    )
     RETURNING id INTO v_idea_2;
-    INSERT INTO public.idea_topic_map (idea_id, topic_id) VALUES (v_idea_2, v_topic_improvement), (v_idea_2, v_topic_styling);
 
-    INSERT INTO public.ideas (organization_id, user_id, status_id, title, description, is_private, is_bug, is_archived, is_unprioritized, is_pinned)
-    VALUES (p_org_id, p_owner_id, NULL, '[Read Me] We''ve created a few example ideas for you', 'You''ll see that we have create a bunch of demo ideas for you.... Have a play with them, vote on them, comment on them, and when you''re ready, delete them!
+    INSERT INTO public.idea_topic_map (idea_id, topic_id)
+    VALUES (v_idea_2, v_topic_feature_request), (v_idea_2, v_topic_ui_ux);
 
-**What you can do with ideas:**
-- Organize them by status (Under consideration, Planned, In Development, Shipped)
-- Categorize them with topics
-- Mark important ones as pinned
-- Archive old ones
-- Flag bugs with the bug report option
+    INSERT INTO public.ideas (
+        organization_id,
+        user_id,
+        status_id,
+        title,
+        description,
+        is_private,
+        is_bug,
+        is_archived,
+        is_unprioritized,
+        is_pinned
+    )
+    VALUES (
+        p_org_id,
+        p_owner_id,
+        v_status_shipped,
+        'Email notifications for new comments',
+        'Users can now receive email notifications when someone comments on their ideas or replies to their comments.
 
-**Getting started with Hintt:**
-1. Customize your statuses in the admin panel
-2. Create topics that match your workflow
-3. Invite your team members
-4. Start collecting feedback!
+**What''s included:**
+• Instant email notifications for new comments
+• Digest emails for multiple updates
+• Customizable notification preferences
+• Unsubscribe options per idea
 
-Feel free to explore all the features and make this space your own. Once you''re comfortable, you can delete these example ideas and start fresh with your real feedback.', false, false, false, false, false)
+**How it works:**
+1. Users are automatically subscribed to ideas they create or comment on
+2. Receive notifications when new activity occurs
+3. Click the link in the email to jump directly to the discussion
+4. Manage preferences from your account settings
+
+This feature helps teams stay connected and ensures important discussions don''t get missed. Try it out by commenting on any idea!',
+        false,
+        false,
+        false,
+        false,
+        false
+    )
     RETURNING id INTO v_idea_3;
-    INSERT INTO public.idea_topic_map (idea_id, topic_id) VALUES (v_idea_3, v_topic_welcome);
 
-    INSERT INTO public.idea_votes (idea_id, user_id, value) VALUES (v_idea_1, p_owner_id, 1), (v_idea_2, p_owner_id, 1);
+    INSERT INTO public.idea_topic_map (idea_id, topic_id)
+    VALUES (v_idea_3, v_topic_improvement);
+
+    -- Add initial votes to make it feel active
+    INSERT INTO public.idea_votes (idea_id, user_id, value)
+    VALUES
+        (v_idea_1, p_owner_id, 1),
+        (v_idea_2, p_owner_id, 1),
+        (v_idea_3, p_owner_id, 1);
+
+    -- Create welcome announcement
+    INSERT INTO public.announcements (
+        organization_id,
+        user_id,
+        title,
+        content,
+        status,
+        published_at,
+        is_pinned
+    )
+    VALUES (
+        p_org_id,
+        p_owner_id,
+        'Welcome to Hintboard! 🎉',
+        jsonb_build_object(
+            'emoji', '🎉',
+            'blocks', jsonb_build_array(
+                jsonb_build_object('type', 'paragraph', 'content', 'We''re excited to have you here! Hintboard is your new home for collecting user feedback, managing your product roadmap, and keeping your community informed with beautiful announcements.'),
+                jsonb_build_object('type', 'h2', 'content', 'What you can do with Hintboard'),
+                jsonb_build_object('type', 'paragraph', 'content', '✨ Collect and organize feature requests from your users'),
+                jsonb_build_object('type', 'paragraph', 'content', '🗳️ Let your community vote on ideas they care about'),
+                jsonb_build_object('type', 'paragraph', 'content', '📋 Build a transparent public roadmap'),
+                jsonb_build_object('type', 'paragraph', 'content', '🤖 Generate AI-powered announcement emails when features ship'),
+                jsonb_build_object('type', 'paragraph', 'content', '💬 Engage with your users through comments and discussions'),
+                jsonb_build_object('type', 'h2', 'content', 'Getting started'),
+                jsonb_build_object('type', 'paragraph', 'content', 'Check out the example ideas we''ve created to get familiar with the platform. When you''re ready, delete them and start collecting real feedback from your users!'),
+                jsonb_build_object('type', 'cta', 'content', 'Explore Your Board', 'url', '/ideas'),
+                jsonb_build_object('type', 'divider', 'content', ''),
+                jsonb_build_object('type', 'footnote', 'content', 'Need help getting started? Check out our documentation or reach out to support.')
+            )
+        ),
+        'published',
+        NOW(),
+        true
+    )
+    RETURNING id INTO v_announcement_1;
+
+    -- Link announcement to categories
+    INSERT INTO public.announcement_category_map (announcement_id, category_id)
+    VALUES
+        (v_announcement_1, v_category_product_updates),
+        (v_announcement_1, v_category_new_features);
+
 END;
 $function$;
 

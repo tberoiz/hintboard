@@ -154,6 +154,35 @@ export default function AnnouncementDetailPage() {
                 className="max-w-full h-auto rounded-lg my-4"
               />
             );
+          case "button":
+            const buttonStyle = block.buttonStyle || "primary";
+            const buttonClasses =
+              buttonStyle === "secondary"
+                ? "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                : buttonStyle === "outline"
+                  ? "border-2 border-primary text-primary hover:bg-primary/10 bg-transparent"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90";
+
+            return (
+              <div key={index} className="my-4">
+                {block.buttonUrl ? (
+                  <a
+                    href={block.buttonUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-block px-6 py-2 rounded-md font-medium transition-colors ${buttonClasses}`}
+                  >
+                    {block.content}
+                  </a>
+                ) : (
+                  <button
+                    className={`px-6 py-2 rounded-md font-medium transition-colors ${buttonClasses}`}
+                  >
+                    {block.content}
+                  </button>
+                )}
+              </div>
+            );
           default:
             return null;
         }

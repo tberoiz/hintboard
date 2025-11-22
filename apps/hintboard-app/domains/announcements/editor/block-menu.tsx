@@ -8,6 +8,7 @@ import {
   ListOrdered,
   Image,
   Minus,
+  MousePointerClick,
 } from "lucide-react";
 import { EditorBlock } from "../types";
 
@@ -65,6 +66,13 @@ export function BlockMenu({ position, onSelectType, onClose }: BlockMenuProps) {
       >
         <Image className="w-4 h-4" />
         <span>Image</span>
+      </button>
+      <button
+        onClick={() => onSelectType("button")}
+        className="w-full px-4 py-2 text-left hover:bg-accent flex items-center gap-3 text-sm"
+      >
+        <MousePointerClick className="w-4 h-4" />
+        <span>Button</span>
       </button>
       <button
         onClick={() => onSelectType("divider")}

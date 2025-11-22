@@ -36,6 +36,7 @@ export async function middleware(req: NextRequest) {
       if (
         path !== "/login" &&
         path !== "/signup" &&
+        path !== "/signup" &&
         path !== "/forgot-password" &&
         path !== "/reset-password" &&
         path !== "/verify-email" &&

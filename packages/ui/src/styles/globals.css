@@ -32,6 +32,36 @@
       --chart-3: 197 37% 24%;
       --chart-4: 43 74% 66%;
       --chart-5: 27 87% 67%;
+
+      /* Idea Card - Pinned */
+      --idea-card-pinned-from: 33 100% 96%;
+      --idea-card-pinned-via: 45 100% 96%;
+      --idea-card-pinned-to: 0 0% 100%;
+      --idea-card-pinned-border: 33 100% 85%;
+      --idea-card-pinned-border-hover: 33 100% 75%;
+
+      /* Idea Card - Vote Button */
+      --idea-card-vote-bg: 33 100% 96%;
+      --idea-card-vote-border: 33 100% 85%;
+      --idea-card-vote-icon: 25 95% 53%;
+      --idea-card-vote-text: 25 95% 45%;
+      --idea-card-vote-inactive-bg: 220 14% 96%;
+      --idea-card-vote-inactive-border: 220 13% 91%;
+      --idea-card-vote-inactive-border-hover: 220 9% 76%;
+      --idea-card-vote-inactive-bg-hover: 220 14% 93%;
+      --idea-card-vote-inactive-icon: 220 9% 46%;
+      --idea-card-vote-inactive-text: 220 9% 26%;
+
+      /* Idea Card - Badges */
+      --idea-card-badge-bug-bg: 0 86% 97%;
+      --idea-card-badge-bug-border: 0 93% 84%;
+      --idea-card-badge-bug-icon: 0 84% 60%;
+      --idea-card-badge-pin-bg: 48 96% 95%;
+      --idea-card-badge-pin-border: 48 96% 81%;
+      --idea-card-badge-pin-icon: 38 92% 50%;
+      --idea-card-badge-private-bg: 220 14% 96%;
+      --idea-card-badge-private-border: 220 13% 91%;
+      --idea-card-badge-private-icon: 220 9% 46%;
     }
 
     .dark {
@@ -59,6 +89,36 @@
       --chart-3: 30 80% 55%;
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
+
+      /* Idea Card - Pinned (Dark) */
+      --idea-card-pinned-from: 20 90% 8%;
+      --idea-card-pinned-via: 35 80% 6%;
+      --idea-card-pinned-to: 0 0% 3.9%;
+      --idea-card-pinned-border: 20 90% 26%;
+      --idea-card-pinned-border-hover: 20 90% 35%;
+
+      /* Idea Card - Vote Button (Dark) */
+      --idea-card-vote-bg: 33 100% 96%;
+      --idea-card-vote-border: 33 100% 85%;
+      --idea-card-vote-icon: 25 95% 53%;
+      --idea-card-vote-text: 25 95% 45%;
+      --idea-card-vote-inactive-bg: 220 14% 96%;
+      --idea-card-vote-inactive-border: 220 13% 91%;
+      --idea-card-vote-inactive-border-hover: 220 9% 76%;
+      --idea-card-vote-inactive-bg-hover: 220 14% 93%;
+      --idea-card-vote-inactive-icon: 220 9% 46%;
+      --idea-card-vote-inactive-text: 220 9% 26%;
+
+      /* Idea Card - Badges (Dark) */
+      --idea-card-badge-bug-bg: 0 60% 10%;
+      --idea-card-badge-bug-border: 0 70% 25%;
+      --idea-card-badge-bug-icon: 0 75% 60%;
+      --idea-card-badge-pin-bg: 45 70% 10%;
+      --idea-card-badge-pin-border: 45 80% 25%;
+      --idea-card-badge-pin-icon: 38 90% 60%;
+      --idea-card-badge-private-bg: 0 0% 15%;
+      --idea-card-badge-private-border: 0 0% 25%;
+      --idea-card-badge-private-icon: 0 0% 60%;
     }
 
     .solarized {
@@ -73,29 +133,59 @@
       --input: 220 15% 35%;
       --card: 220 15% 28%;
       --card-foreground: 220 10% 95%;
-      --primary: 220 70% 65%; /* soft blue that complements the grayscale */
+      --primary: 220 70% 65%;
       --primary-foreground: 220 15% 25%;
       --secondary: 220 15% 32%;
       --secondary-foreground: 220 10% 85%;
-      --accent: 220 15% 45%; /* more visible accent for hover states */
+      --accent: 220 15% 45%;
       --accent-foreground: 220 10% 95%;
       --destructive: 0 84% 60%;
       --destructive-foreground: 0 0% 100%;
-      --ring: 220 70% 65%; /* same as primary */
-      --radius: 0.825rem; /* same as light theme */
-      --chart-1: 220 60% 70%; /* soft blue for positive bars */
-      --chart-2: 45 70% 70%; /* muted yellow for contrast */
-      --chart-3: 148 30% 46%; /* soft purple */
-      --chart-4: 8 70% 62%; /* pastel red for negative bars */
-      --chart-5: 20 60% 70%; /* soft orange */
+      --ring: 220 70% 65%;
+      --radius: 0.825rem;
+      --chart-1: 220 60% 70%;
+      --chart-2: 45 70% 70%;
+      --chart-3: 148 30% 46%;
+      --chart-4: 8 70% 62%;
+      --chart-5: 20 60% 70%;
       --sidebar-background: 220 15% 22%;
       --sidebar-foreground: 220 10% 90%;
-      --sidebar-primary: 220 70% 65%; /* soft blue */
+      --sidebar-primary: 220 70% 65%;
       --sidebar-primary-foreground: 220 15% 22%;
-      --sidebar-accent: 220 15% 40%; /* more visible sidebar accent for hover states */
+      --sidebar-accent: 220 15% 40%;
       --sidebar-accent-foreground: 220 10% 85%;
       --sidebar-border: 220 15% 35%;
-      --sidebar-ring: 220 70% 65%; /* same as primary */
+      --sidebar-ring: 220 70% 65%;
+
+      /* Idea Card - Pinned (Solarized) */
+      --idea-card-pinned-from: 35 60% 30%;
+      --idea-card-pinned-via: 40 50% 28%;
+      --idea-card-pinned-to: 220 15% 28%;
+      --idea-card-pinned-border: 35 60% 45%;
+      --idea-card-pinned-border-hover: 35 60% 55%;
+
+      /* Idea Card - Vote Button (Solarized) */
+      --idea-card-vote-bg: 35 50% 35%;
+      --idea-card-vote-border: 35 60% 45%;
+      --idea-card-vote-icon: 30 80% 65%;
+      --idea-card-vote-text: 30 80% 70%;
+      --idea-card-vote-inactive-bg: 220 15% 32%;
+      --idea-card-vote-inactive-border: 220 15% 40%;
+      --idea-card-vote-inactive-border-hover: 220 15% 50%;
+      --idea-card-vote-inactive-bg-hover: 220 15% 38%;
+      --idea-card-vote-inactive-icon: 220 10% 65%;
+      --idea-card-vote-inactive-text: 220 10% 75%;
+
+      /* Idea Card - Badges (Solarized) */
+      --idea-card-badge-bug-bg: 0 50% 30%;
+      --idea-card-badge-bug-border: 0 60% 40%;
+      --idea-card-badge-bug-icon: 0 70% 65%;
+      --idea-card-badge-pin-bg: 45 50% 30%;
+      --idea-card-badge-pin-border: 45 60% 40%;
+      --idea-card-badge-pin-icon: 40 80% 65%;
+      --idea-card-badge-private-bg: 220 15% 32%;
+      --idea-card-badge-private-border: 220 15% 40%;
+      --idea-card-badge-private-icon: 220 10% 65%;
     }
   }
 }
@@ -121,7 +211,7 @@
       sans-serif;
     font-feature-settings: "cv11", "ss01";
     font-variation-settings: "opsz" 32;
-    font-weight: 500; /* Heavier default weight */
+    font-weight: 500;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -133,7 +223,6 @@ body {
   height: 100%;
 }
 
-/* Enhanced typography classes with heavier weights */
 @layer utilities {
   .text-display {
     @apply text-4xl font-semibold tracking-tight;
@@ -166,11 +255,11 @@ body {
   }
 
   .scrollbar-hidden {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   .scrollbar-hidden::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
   }
 }

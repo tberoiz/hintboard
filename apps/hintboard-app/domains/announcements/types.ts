@@ -7,8 +7,11 @@ export interface EditorBlock {
     | "image"
     | "divider"
     | "bullet-list"
-    | "numbered-list";
+    | "numbered-list"
+    | "button";
   content: string;
+  buttonUrl?: string; // URL for button block
+  buttonStyle?: "primary" | "secondary" | "outline"; // Style variants
 }
 
 export interface Category {

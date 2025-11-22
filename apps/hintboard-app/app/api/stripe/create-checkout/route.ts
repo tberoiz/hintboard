@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@hintboard/supabase/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripeCheckout = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2023-10-16",
 });
 
@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get authenticated user
     const {
       data: { user },
       error: authError,
@@ -33,12 +34,14 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ User authenticated:", user.id);
 
+    // Check existing subscription
     const { data: existingSub } = await supabase
       .from("user_subscriptions")
-      .select("*")
+      .select("stripe_customer_id, status")
       .eq("user_id", user.id)
       .single();
 
+    // Check if user has active access
     const { data: hasAccess } = await supabase.rpc("user_has_access", {
       user_id: user.id,
     });
@@ -51,40 +54,44 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let customer;
+    // Get or create Stripe customer
+    let customerId: string;
+
     if (existingSub?.stripe_customer_id) {
-      console.log("🔍 Retrieving existing Stripe customer");
-      customer = await stripe.customers.retrieve(
-        existingSub.stripe_customer_id,
-      );
+      console.log("🔍 Using existing Stripe customer");
+      customerId = existingSub.stripe_customer_id;
     } else {
       console.log("✨ Creating new Stripe customer");
-      customer = await stripe.customers.create({
+      const customer = await stripeCheckout.customers.create({
         email: user.email!,
         metadata: { supabase_user_id: user.id },
       });
+      customerId = customer.id;
+      console.log("👤 Stripe customer created:", customerId);
 
+      // Save customer ID if subscription record exists
       if (existingSub) {
         await supabase
           .from("user_subscriptions")
-          .update({ stripe_customer_id: customer.id })
+          .update({ stripe_customer_id: customerId })
           .eq("user_id", user.id);
       }
     }
 
-    console.log("👤 Stripe customer ID:", customer.id);
-
-    const price = await stripe.prices.retrieve(priceId);
+    // Retrieve price to get billing interval
+    const price = await stripeCheckout.prices.retrieve(priceId);
     const interval = price.recurring?.interval || "month";
 
     console.log("📅 Billing interval:", interval);
 
+    // Build success/cancel URLs
     const host = request.headers.get("host");
     const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
     const baseUrl = `${protocol}://${host}`;
 
-    const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
+    // Create checkout session
+    const session = await stripeCheckout.checkout.sessions.create({
+      customer: customerId,
       payment_method_types: ["card"],
       mode: "subscription",
       line_items: [
