@@ -43,9 +43,9 @@ export default async function OrganizationsPage() {
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-semibold mb-2">Choose your company</h1>
+          <h1 className="text-3xl font-semibold mb-2">Choose a Board</h1>
           <p className="text-muted-foreground">
-            Select a company or create a new one
+            Select a board you or create a new one
           </p>
         </div>
 

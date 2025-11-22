@@ -46,7 +46,7 @@ export default function IdeasPage() {
   // Check if viewing as customer
   const viewAsCustomer = searchParams.get("viewAsCustomer") === "true";
 
-  const [sortBy, setSortBy] = useState<"trending" | "recent">("recent");
+  const [sortBy, setSortBy] = useState<"trending" | "recent">("trending");
   const [selectedStatusId, setSelectedStatusId] = useState<string | null>(null);
   const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
   const [adminFilters, setAdminFilters] = useState<AdminFilters>({
